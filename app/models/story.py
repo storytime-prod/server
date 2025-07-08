@@ -1,4 +1,4 @@
-from sqlmodel import Field, Session, SQLModel, create_engine, select
+from sqlmodel import Field, SQLModel
 
 
 class Story(SQLModel, table=True):
@@ -6,3 +6,4 @@ class Story(SQLModel, table=True):
     name: str = Field(index=True)
     age: int | None = Field(default=None, index=True)
     secret_name: str
+    genre: str | None = Field(default=None, index=True)

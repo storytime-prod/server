@@ -1,6 +1,6 @@
 from typing import Annotated
 from fastapi import Depends
-from sqlmodel import Field, Session, SQLModel, create_engine, select
+from sqlmodel import Session, SQLModel, create_engine
 
 
 from dotenv import load_dotenv
