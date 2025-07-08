@@ -14,9 +14,9 @@ api = FastAPI()
 test_connection()  # Test database connection on startup
 
 
-@api.on_event("startup")
-def on_startup():
-    create_db_and_tables()
+# @api.on_event("startup")
+# def on_startup():
+#     create_db_and_tables()
 
 
 @api.get("/")
