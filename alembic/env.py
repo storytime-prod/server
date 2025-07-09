@@ -7,7 +7,13 @@ from alembic import context
 
 
 from sqlmodel import SQLModel
-from app.models import *  # or list your specific models
+from app.models import (
+    story,
+    like,
+    comment,
+    branch,
+    branch_req,
+)  # or list your specific models
 from app.database import engine
 
 # this is the Alembic Config object, which provides
