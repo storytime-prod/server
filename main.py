@@ -30,7 +30,7 @@ def create_story(story: Story, session: SessionDep) -> Story:
         created_at=story.created_at,
         likes=story.likes,
         genre=story.genre,
-        isRoot=story.isRoot,
+        is_root=story.isRoot,
         is_public=story.is_public,
     )
     session.add(s)
