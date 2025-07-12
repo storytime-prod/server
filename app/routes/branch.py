@@ -11,7 +11,7 @@ from app.models.story import Story
 router = APIRouter()
 
 
-@router.post("/branch/create", response_model=Branch)
+@router.post("/branch/create", response_model=Branch, description="ONLY FOR DEV")
 def create_branch(branch: Branch, session: SessionDep) -> Branch:
     session.add(branch)
     session.commit()

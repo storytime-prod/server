@@ -1,9 +1,12 @@
+from datetime import datetime
+from time import timezone
 from fastapi import APIRouter, HTTPException
 from sqlmodel import select
 
 from app.common.database import SessionDep
 from app.models.branch import Branch
 from app.models.branch_req import BranchRequest
+from app.models.story import Story
 
 
 router = APIRouter()
@@ -20,6 +23,15 @@ def create_branch_req(branch_req: BranchRequest, session: SessionDep) -> BranchR
             status_code=400,
             detail=f"Invalid link: dest_id '{branch_req.dest_id}' already exists as a src_id. Cyclic branches not allowed.",
         )
+    new_story = Story(
+        title="Untitled",
+        content="",
+        author=branch_req.author,
+        is_root=False,
+        is_public=False,
+        id=branch_req.dest_id,
+    )
+    session.add(new_story)
     session.add(branch_req)
     session.commit()
     session.refresh(branch_req)
@@ -53,6 +65,12 @@ def approve_branch_req(branch_req_id: str, session: SessionDep) -> BranchRequest
 
     # Approve the branch request
     branch_req.status = "approved"
+    new_branch = Branch(
+        src_id=branch_req.src_id,
+        dest_id=branch_req.dest_id,
+        title=branch_req.comment or "Untitled Branch",
+    )
+    session.add(new_branch)
     session.add(branch_req)
     session.commit()
     session.refresh(branch_req)

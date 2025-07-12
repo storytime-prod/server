@@ -37,7 +37,7 @@ def read_stories(
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 100,
 ) -> list[Story]:
-    statement = select(Story).offset(offset).limit(limit)
+    statement = select(Story).where(Story.is_public == True).offset(offset).limit(limit)
     stories = session.exec(statement).all()
     return stories
 
