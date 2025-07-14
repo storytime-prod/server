@@ -1,7 +1,7 @@
 from datetime import datetime
 from time import timezone
 from fastapi import APIRouter, HTTPException
-from sqlmodel import select
+from sqlmodel import not_, select
 
 from app.common.database import SessionDep
 from app.models.branch import Branch
@@ -39,7 +39,7 @@ def read_branch_reqs(session: SessionDep) -> list[BranchRequest]:
 @router.get("/branch-req/{story_id}", response_model=list[BranchRequest])
 def read_branch_req(story_id: str, session: SessionDep) -> list[BranchRequest]:
     statement = select(BranchRequest).where(BranchRequest.src_id == story_id)
-    branch_req = session.exec(statement)
+    branch_req = session.exec(statement).all()
     if not branch_req:
         raise ValueError(f"Branch request for {story_id} not found")
     return branch_req
@@ -66,6 +66,16 @@ def approve_branch_req(branch_req_id: str, session: SessionDep) -> BranchRequest
     session.commit()
     session.refresh(branch_req)
     return branch_req
+
+
+@router.get("/branch-req/{story_id}/branchables", response_model=list[Story])
+def get_branchable_stories(story_id: str, session: SessionDep) -> list[Story]:
+    subquery = select(Branch.dest_id).where(Branch.dest_id != None)
+    statement = (
+        select(Story).where(Story.id != story_id).where(not_(Story.id.in_(subquery)))
+    )
+    results = session.exec(statement).all()
+    return results
 
 
 @router.delete("/branch-req/{branch_req_id}", response_model=BranchRequest)
