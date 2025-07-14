@@ -54,7 +54,10 @@ def read_story(story_id: str, session: SessionDep) -> Story:
 @router.get("/story/random", response_model=Story)
 def read_random_story(session: SessionDep) -> Story:
     statement = (
-        select(Story).where(Story.is_root == True).order_by(func.random()).limit(1)
+        select(Story)
+        .where(Story.is_root == True, Story.is_public == True)
+        .order_by(func.random())
+        .limit(1)
     )
     story = session.exec(statement).first()
     if not story:
