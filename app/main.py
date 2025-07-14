@@ -13,6 +13,11 @@ api.include_router(branch.router, prefix="/api/v1", tags=["branch"])
 api.include_router(comment.router, prefix="/api/v1", tags=["comment"])
 api.include_router(branch_req.router, prefix="/api/v1", tags=["branch_request"])
 
+# For filling the database
+from app.utils import seed
+
+api.include_router(seed.router, prefix="/api/v1", tags=["seed"])
+
 
 @api.get("/", tags=["redirect"], include_in_schema=False)
 async def root():
