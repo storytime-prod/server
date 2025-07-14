@@ -42,7 +42,7 @@ def read_stories(
     return stories
 
 
-@router.get("/story/{story_id}", response_model=Story)
+@router.get("/story/id/{story_id}", response_model=Story)
 def read_story(story_id: str, session: SessionDep) -> Story:
     statement = select(Story).where(Story.id == story_id)
     story = session.exec(statement).first()

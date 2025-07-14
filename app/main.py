@@ -3,8 +3,17 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from app.common.database import test_connection
 from app.routes import branch, branch_req, comment, story
+from fastapi.middleware.cors import CORSMiddleware
 
 api = FastAPI()
+
+api.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:8000", "http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 test_connection()  # Test database connection on startup
 

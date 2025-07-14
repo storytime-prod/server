@@ -7,6 +7,17 @@ from app.models.branch_req import BranchRequest
 from app.models.story import Story
 
 
+import json
+
+mock_stories = []
+
+with open(
+    "C:\\Users\\LEGEND\\Desktop\\StoryTime\\server\\app\\utils\\mockStories.json",
+    "r",
+    encoding="utf-8",
+) as f:
+    mock_stories = json.load(f)
+
 router = APIRouter()
 
 
@@ -15,14 +26,14 @@ branches = [(0, 1), (0, 2), (0, 3), (2, 4), (4, 5), (3, 6), (3, 7), (7, 9)]
 
 @router.post("/seed/dbpopulate", description="ONLY FOR DEV")
 def fill__story_db(session: SessionDep):
-    for i in range(10):
+    for story in mock_stories:
         s = Story(
-            title=f"Sample Story {i}",
-            content=f"This is the content of sample story {i}.",
-            author="Author Name",
-            likes=0,
-            genre="Fiction",
-            is_root=True,
+            title=story["title"],
+            content=story["content"],
+            author=story["author"],
+            likes=story["likes"],
+            genre=story["genre"],
+            is_root=story["is_root"],
             is_public=True,
         )
         session.add(s)
@@ -73,7 +84,7 @@ def fill__branch_req_db(session: SessionDep):
         likes=0,
         genre="Fiction",
         is_root=True,
-        is_public=True,
+        is_public=False,
     )
 
     session.add(s)
@@ -92,4 +103,13 @@ def fill__branch_req_db(session: SessionDep):
     session.refresh(s)
     session.refresh(d)
     session.refresh(br)
+    return None
+
+
+@router.delete("/seed/deleteall", description="ONLY FOR DEV")
+def delete_all_data(session: SessionDep):
+    session.query(BranchRequest).delete()
+    session.query(Branch).delete()
+    session.query(Story).delete()
+    session.commit()
     return None
