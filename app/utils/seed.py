@@ -12,7 +12,7 @@ import json
 mock_stories = []
 
 with open(
-    "C:\\Users\\LEGEND\\Desktop\\StoryTime\\server\\app\\utils\\mockStories.json",
+    "./mockStories.json",
     "r",
     encoding="utf-8",
 ) as f:
