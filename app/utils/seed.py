@@ -12,7 +12,7 @@ import json
 mock_stories = []
 
 with open(
-    "./mockStories.json",
+    "mockStories.json",
     "r",
     encoding="utf-8",
 ) as f:
