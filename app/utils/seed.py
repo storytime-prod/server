@@ -1,3 +1,4 @@
+import os
 from fastapi import APIRouter
 from sqlalchemy import func, select
 
@@ -9,10 +10,13 @@ from app.models.story import Story
 
 import json
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+file_path = os.path.join(current_dir, "mockStories.json")
+
 mock_stories = []
 
 with open(
-    "mockStories.json",
+    file_path,
     "r",
     encoding="utf-8",
 ) as f:
