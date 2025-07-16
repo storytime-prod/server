@@ -5,6 +5,9 @@ from app.common.database import test_connection
 from app.routes import branch, branch_req, comment, story
 from fastapi.middleware.cors import CORSMiddleware
 
+# For filling the database
+from app.utils import generateTree, seed
+
 api = FastAPI()
 
 api.add_middleware(
@@ -21,9 +24,8 @@ api.include_router(story.router, prefix="/api/v1", tags=["story"])
 api.include_router(branch.router, prefix="/api/v1", tags=["branch"])
 api.include_router(comment.router, prefix="/api/v1", tags=["comment"])
 api.include_router(branch_req.router, prefix="/api/v1", tags=["branch_request"])
+api.include_router(generateTree.router, prefix="/api/v1", tags=["generate_tree"])
 
-# For filling the database
-from app.utils import seed
 
 api.include_router(seed.router, prefix="/api/v1", tags=["seed"])
 

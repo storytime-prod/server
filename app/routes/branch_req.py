@@ -15,14 +15,14 @@ router = APIRouter()
 @router.post("/branch-req/", response_model=BranchRequest)
 def create_branch_req(branch_req: BranchRequest, session: SessionDep) -> BranchRequest:
     # Check if dest_id already exists as a src_id
-    exists_stmt = select(Branch).where(Branch.src_id == branch_req.dest_id)
-    existing = session.exec(exists_stmt).first()
+    # exists_stmt = select(Branch).where(Branch.src_id == branch_req.dest_id)
+    # existing = session.exec(exists_stmt).first()
 
-    if existing:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Invalid link: dest_id '{branch_req.dest_id}' already exists as a src_id. Cyclic branches not allowed.",
-        )
+    # if existing:
+    #     raise HTTPException(
+    #         status_code=400,
+    #         detail=f"Invalid link: dest_id '{branch_req.dest_id}' already exists as a src_id. Cyclic branches not allowed.",
+    #     )
     session.add(branch_req)
     session.commit()
     session.refresh(branch_req)
