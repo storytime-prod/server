@@ -4,11 +4,10 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from app.common.database import test_connection
-from app.routes import branch, branch_req, comment, story
+from app.routes import auth, branch, branch_req, comment, story
 from fastapi.middleware.cors import CORSMiddleware
 
 from starlette.middleware.sessions import SessionMiddleware
-from app.routes.auth import auth
 
 from app.utils import generateTree, seed
 
