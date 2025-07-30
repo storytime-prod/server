@@ -12,6 +12,7 @@ from app.models import (
     comment,
     branch,
     branch_req,
+    user,
 )  # or list your specific models
 from app.common.database import engine
 

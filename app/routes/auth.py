@@ -3,7 +3,11 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import PlainTextResponse, RedirectResponse
 from authlib.integrations.starlette_client import OAuth
 
+from sqlmodel import select
+
+from app.models.user import User
 from app.utils.auth import create_access_token, get_current_user
+from app.common.database import SessionDep
 
 router = APIRouter()
 oauth = OAuth()
@@ -24,7 +28,7 @@ async def login(request: Request):
 
 
 @router.get("/auth")
-async def auth(request: Request):
+async def auth(request: Request, session: SessionDep):
     token = await oauth.google.authorize_access_token(request)
     print("token:", token)
     try:
@@ -33,6 +37,19 @@ async def auth(request: Request):
         )
         user = resp.json()
         request.session["user"] = user
+        existing_user = session.exec(
+            select(User).where(User.oauth_id == user["sub"])
+        ).first()
+        if not existing_user:
+            new_user = User(
+                oauth_id=user["sub"],
+                username=user["name"],
+                profile_picture=user.get("picture"),
+                email=user["email"],
+            )
+            session.add(new_user)
+            session.commit()
+            session.refresh(new_user)
         token = create_access_token(
             {"sub": user["email"], "name": user["name"], "picture": user["picture"]}
         )
