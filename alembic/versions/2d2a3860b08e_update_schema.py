@@ -1,8 +1,8 @@
 """Update Schema
 
-Revision ID: bd7dc1ceb16a
+Revision ID: 2d2a3860b08e
 Revises:
-Create Date: 2025-07-30 15:54:35.739948
+Create Date: 2025-07-30 21:47:57.920435
 
 """
 
@@ -14,7 +14,7 @@ import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision: str = "bd7dc1ceb16a"
+revision: str = "2d2a3860b08e"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -37,7 +37,7 @@ def upgrade() -> None:
         "story",
         sa.Column("id", sa.Uuid(), nullable=False),
         sa.Column("title", sqlmodel.sql.sqltypes.AutoString(), nullable=False),
-        sa.Column("author", sa.Uuid(), nullable=False),
+        sa.Column("author_id", sa.Uuid(), nullable=False),
         sa.Column("content", sqlmodel.sql.sqltypes.AutoString(), nullable=False),
         sa.Column("genre", sqlmodel.sql.sqltypes.AutoString(), nullable=True),
         sa.Column("is_root", sa.Boolean(), nullable=False),
@@ -45,12 +45,12 @@ def upgrade() -> None:
         sa.Column("is_public", sa.Boolean(), nullable=True),
         sa.Column("likes", sa.Integer(), nullable=True),
         sa.ForeignKeyConstraint(
-            ["author"],
+            ["author_id"],
             ["user.id"],
         ),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f("ix_story_author"), "story", ["author"], unique=False)
+    op.create_index(op.f("ix_story_author_id"), "story", ["author_id"], unique=False)
     op.create_index(op.f("ix_story_created_at"), "story", ["created_at"], unique=False)
     op.create_index(op.f("ix_story_genre"), "story", ["genre"], unique=False)
     op.create_index(op.f("ix_story_is_public"), "story", ["is_public"], unique=False)
@@ -179,7 +179,7 @@ def downgrade() -> None:
     op.drop_index(op.f("ix_story_is_public"), table_name="story")
     op.drop_index(op.f("ix_story_genre"), table_name="story")
     op.drop_index(op.f("ix_story_created_at"), table_name="story")
-    op.drop_index(op.f("ix_story_author"), table_name="story")
+    op.drop_index(op.f("ix_story_author_id"), table_name="story")
     op.drop_table("story")
     op.drop_index(op.f("ix_user_oauth_id"), table_name="user")
     op.drop_table("user")

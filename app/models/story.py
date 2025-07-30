@@ -1,12 +1,14 @@
 from datetime import datetime, timezone
+from typing import Optional
 import uuid
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
 
 
 class Story(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     title: str = Field(index=True)
-    author: uuid.UUID = Field(default=None, index=True, foreign_key="user.id")
+    author_id: uuid.UUID = Field(default=None, index=True, foreign_key="user.id")
+    author: Optional["User"] = Relationship(back_populates="stories")
     content: str
     genre: str | None = Field(default=None, index=True)
     is_root: bool = Field(default=True, index=True)

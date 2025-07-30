@@ -55,7 +55,8 @@ async def auth(request: Request, session: SessionDep):
         token = create_access_token(
             {
                 "id": str(user_id),
-                "sub": user["email"],
+                "email": user["email"],
+                "sub": user["sub"],
                 "name": user["name"],
                 "picture": user["picture"],
             }

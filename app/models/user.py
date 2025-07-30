@@ -1,6 +1,9 @@
-from datetime import datetime, timezone
+from typing import List
 import uuid
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
+
+from app.models.branch_req import BranchRequest
+from app.models.story import Story
 
 
 class User(SQLModel, table=True):
@@ -9,3 +12,5 @@ class User(SQLModel, table=True):
     username: str = Field()
     profile_picture: str | None = Field(default=None)
     email: str = Field()
+    stories: List[Story] = Relationship(back_populates="author")
+    branch_requests: List[BranchRequest] = Relationship(back_populates="created_by")
