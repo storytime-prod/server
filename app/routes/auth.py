@@ -40,6 +40,7 @@ async def auth(request: Request, session: SessionDep):
         existing_user = session.exec(
             select(User).where(User.oauth_id == user["sub"])
         ).first()
+        user_id = existing_user.id if existing_user else None
         if not existing_user:
             new_user = User(
                 oauth_id=user["sub"],
@@ -50,8 +51,14 @@ async def auth(request: Request, session: SessionDep):
             session.add(new_user)
             session.commit()
             session.refresh(new_user)
+            user_id = new_user.id
         token = create_access_token(
-            {"sub": user["email"], "name": user["name"], "picture": user["picture"]}
+            {
+                "id": str(user_id),
+                "sub": user["email"],
+                "name": user["name"],
+                "picture": user["picture"],
+            }
         )
     except Exception as e:
         return PlainTextResponse(f"OAuth error: {str(e)}", status_code=400)
@@ -69,7 +76,7 @@ async def auth(request: Request, session: SessionDep):
 
 @router.get("/logout")
 async def logout(request: Request):
-    response = RedirectResponse(url="http://localhost:5173")
+    response = RedirectResponse(url="http://localhost:5173", status_code=302)
     response.delete_cookie("access_token")
     request.session.pop("user", None)
 

@@ -11,3 +11,4 @@ class Comment(SQLModel, table=True):
     created_at: str | None = Field(
         default_factory=lambda: datetime.now(datetime.timezone.utc), index=True
     )  # ISO format
+    created_by: uuid.UUID = Field(default=None, foreign_key="user.id", index=True)
